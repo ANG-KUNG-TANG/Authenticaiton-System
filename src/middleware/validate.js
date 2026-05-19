@@ -1,14 +1,13 @@
-import { ValidationError} from '../utils/Errors.js'
-
+import { ValidationError } from '../utils/Errors.js';
 
 
 export const validate = (schema) => (req, res, next) => {
     const result = schema.safeParse(req.body)
     if (!result.success) {
-       const messages = Object.entries(result.erros.flatten().fieldErrors)
+       const messages = Object.entries(result.error.flatten().fieldErrors)
         .map(([field, errors]) => `${field} : ${errors.join(", ")}`)
         .join(' | ')
-        return next(new ValidationEror(messages))
+        return next(new ValidationError(messages))
     }
     req.body = result.data
     next();
